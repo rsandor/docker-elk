@@ -30,6 +30,7 @@ RUN curl -s -o /tmp/kibana-${KIBANA_VER}.tar.gz https://download.elasticsearch.o
     mv kibana-${KIBANA_VER} kibana
 ADD ./docker-elk/etc/nginx/conf.d/kibana.conf /etc/nginx/conf.d/kibana.conf
 WORKDIR /etc/nginx/
+
 # Config kibana-Dashboards
 ADD ./docker-elk/var/www/kibana/app/dashboards/ /var/www/kibana/app/dashboards/
 ADD ./docker-elk/var/www/kibana/config.js /var/www/kibana/config.js
@@ -43,8 +44,13 @@ RUN curl -s -L -o kibana-${KIBANA_VER}-linux-x64.tar.gz https://download.elastic
 RUN ln -sf /opt/kibana-${KIBANA_VER}-linux-x64 /opt/kibana
 ADD ./docker-elk/etc/supervisord.d/kibana.ini /etc/supervisord.d/
 ADD ./docker-elk/etc/consul.d/check_kibana4.json /etc/consul.d/
+
 # Config kibana4
 ADD ./docker-elk/opt/kibana/config/kibana.yml /opt/kibana/config/kibana.yml
+
+# Test key and cert
+ADD ./docker-elk/etc/pki/tls/certs/logstash-forwarder.crt /etc/pki/tls/certs/logstash-forwarder.crt
+ADD ./docker-elk/etc/pki/tls/private/logstash-forwarder.key /etc/pki/tls/private/logstash-forwarder.key
 
 # logstash config
 ADD ./docker-elk/etc/default/logstash/ /etc/default/logstash/
@@ -53,7 +59,3 @@ ADD ./docker-elk/etc/consul.d/ /etc/consul.d/
 ADD ./docker-elk/opt/qnib/bin/ /opt/qnib/bin/
 ADD ./docker-elk/etc/diamond/handlers/InfluxdbHandler.conf /etc/diamond/handlers/InfluxdbHandler.conf
 ADD ./docker-elk/etc/supervisord.d/ /etc/supervisord.d/
-
-# Test key and cert
-ADD ./docker-elk/etc/pki/tls/certs/logstash-forwarder.crt /etc/pki/tls/certs/logstash-forwarder.crt
-ADD ./docker-elk/etc/pki/tls/private/logstash-forwarder.key /etc/pki/tls/private/logstash-forwarder.key
